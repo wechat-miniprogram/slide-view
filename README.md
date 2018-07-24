@@ -37,6 +37,6 @@ npm install --save weapp-slide-view
 |-------------------------|--------------|---------------------------|------------|---------------------------------------------|
 | width                   | Number       | 显示屏幕的宽度             | 是          | slide-view组件的宽度                        |
 | height                  | Number       | 0                         | 是          | slide-view组件的高度                        |
-| slideWidth              | Number       | 0                         | 是          | 滑动展示区域的宽度（默认高度于slide-view相同）|
+| slide-width              | Number       | 0                         | 是          | 滑动展示区域的宽度（默认高度于slide-view相同）|
 
 
