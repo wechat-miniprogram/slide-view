@@ -1,7 +1,7 @@
 {
-  "name": "weapp-slide-view",
-  "version": "0.0.2",
-  "description": "weapp custom component",
+  "name": "miniprogram-slide-view",
+  "version": "0.0.1",
+  "description": "miniprogram custom component",
   "main": "miniprogram_dist/index.js",
   "scripts": {
     "dev": "gulp dev --develop",

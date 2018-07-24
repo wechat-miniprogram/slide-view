@@ -25,8 +25,8 @@ npm install --save weapp-slide-view
 <slide-view class="slide" width="320" height="100" slideWidth="200">
   <view slot="left">这里是插入到组内容</view>
   <view slot="right">
-      <view>标为已读</view>
-      <view>删除</view>
+    <view>标为已读</view>
+    <view>删除</view>
   </view>
 </slide-view>
 ```
