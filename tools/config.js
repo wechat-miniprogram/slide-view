@@ -13,6 +13,7 @@ const dist = path.resolve(__dirname, '../miniprogram_dist');
 
 module.exports = {
     entry: 'index',
+    copy: ['./wxml', './wxss', './wxs', './images'],
 
     isDev,
     isWatch,
@@ -32,7 +33,6 @@ module.exports = {
         output: {
             filename: '[name].js',
             chunkFilename: 'chunk/[chunkhash].chunk.js',
-            path: isDev ? dev : dist,
         },
         target: 'node',
         externals: [nodeExternals()], // ignore node_modules
@@ -66,6 +66,4 @@ module.exports = {
             }
         }
     },
-
-    copy: ['./wxml', './wxss', './wxs', './images'],
 };

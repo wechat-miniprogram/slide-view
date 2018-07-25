@@ -1,7 +1,8 @@
 # slide-view
 
 小程序自定义组件
-需要依赖小程序基础库 2.2.1 版本，同时依赖工具的 npm 构建。具体详情可查阅[官方 npm 文档](https://developers.weixin.qq.com/miniprogram/dev/devtools/npm.html)。
+
+> 小程序的npm支持需要依赖小程序基础库 2.2.1 版本，同时依赖开发者工具的 npm 构建。具体详情可查阅[官方 npm 文档](https://developers.weixin.qq.com/miniprogram/dev/devtools/npm.html)。
 
 ## 使用效果
 ![slide-view](https://github.com/wechat-miniprogram/slide-view/blob/master/image/slide-view.gif)
