@@ -6,11 +6,12 @@ const BuildTask = require('./tools/build');
 
 let entry = config.entry;
 let idMap = {};
+let isSimpleEntry = typeof entry === 'string';
 
-if (typeof entry === 'object') {
-    idMap = entry;
-} else {
+if (isSimpleEntry) {
     idMap = { main: entry };
+} else {
+    idMap = entry;
 }
 
 // build task instance
@@ -18,7 +19,8 @@ let idList = Object.keys(idMap);
 idList.forEach(id => {
     new BuildTask({
         id,
-        entry: idMap[id]
+        entry: idMap[id],
+        isSimpleEntry,
     });
 });
 

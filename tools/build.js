@@ -21,7 +21,8 @@ class BuildTask {
         this.id = options.id;
         this.entry = options.entry;
         this.srcPath = config.srcPath;
-        this.distPath = config.isDev ? path.join(config.distPath, this.id) : path.join(config.distPath, this.id, 'miniprogram_dist');
+        this.isSimpleEntry = options.isSimpleEntry;
+        this.distPath = this.isSimpleEntry ? config.distPath : config.isDev ? path.join(config.distPath, this.id) : path.join(config.distPath, this.id, 'miniprogram_dist');
         this.copyList = Array.isArray(config.copy) ? config.copy : (config.copy && config.copy[this.id] || []);
         this.componentListMap = {};
         this.cachedComponentListMap = {};
@@ -105,7 +106,7 @@ class BuildTask {
             let packageJson = _.readJson(path.resolve(__dirname, '../package.json'));
             let dependencies = packageJson.dependencies || {};
 
-            await _.writeFileSync(demoPackageJsonPath, JSON.stringify({ dependencies }, null, '\t')); // write dev demo's package.json
+            await _.writeFile(demoPackageJsonPath, JSON.stringify({ dependencies }, null, '\t')); // write dev demo's package.json
         }, () => {
             let demoDist = config.demoDist;
             let demoPackageJsonPath = path.join(demoDist, 'package.json');
@@ -117,10 +118,12 @@ class BuildTask {
     }
 
     init() {
+        let id = this.id;
+
         /**
          * clean the dist folder
          */
-        gulp.task(`${this.id}-clean-dist`, () => {
+        gulp.task(`${id}-clean-dist`, () => {
             return gulp.src(this.distPath, { read: false, allowEmpty: true })
                 .pipe(clean());
         });
@@ -129,7 +132,7 @@ class BuildTask {
          * copy demo to the dev folder
          */
         let isDemoExists = false 
-        gulp.task(`${this.id}-demo`, gulp.series(async () => {
+        gulp.task(`${id}-demo`, gulp.series(async () => {
             let demoDist = config.demoDist;
             
             isDemoExists = await _.checkFileExists(path.join(demoDist, 'project.config.json'));
@@ -148,12 +151,12 @@ class BuildTask {
         /**
          * install packages for dev
          */
-        gulp.task(`${this.id}-install`, this.install());
+        gulp.task(`${id}-install`, this.install());
 
         /**
          * check custom components
          */
-        gulp.task(`${this.id}-component-check`, async () => {
+        gulp.task(`${id}-component-check`, async () => {
             let entry = path.join(this.srcPath, `${this.entry}.json`);
             let newComponentListMap = await checkComponents(entry);
 
@@ -164,7 +167,7 @@ class BuildTask {
         /**
          * write json to the dist folder
          */
-        gulp.task(`${this.id}-component-json`, done => {
+        gulp.task(`${id}-component-json`, done => {
             let jsonFileList = this.componentListMap.jsonFileList;
 
             if (jsonFileList && jsonFileList.length) {
@@ -177,7 +180,7 @@ class BuildTask {
         /**
          * copy wxml to the dist folder
          */
-        gulp.task(`${this.id}-component-wxml`, done => {
+        gulp.task(`${id}-component-wxml`, done => {
             let wxmlFileList = this.componentListMap.wxmlFileList;
 
             if (wxmlFileList && wxmlFileList.length && !_.compareArray(this.cachedComponentListMap.wxmlFileList, wxmlFileList)) {
@@ -190,7 +193,7 @@ class BuildTask {
         /**
          * generate wxss to the dist folder
          */
-        gulp.task(`${this.id}-component-wxss`, done => {
+        gulp.task(`${id}-component-wxss`, done => {
             let wxssFileList = this.componentListMap.wxssFileList;
 
             if (wxssFileList && wxssFileList.length && !_.compareArray(this.cachedComponentListMap.wxssFileList, wxssFileList)) {
@@ -203,7 +206,7 @@ class BuildTask {
         /**
          * generate js to the dist folder
          */
-        gulp.task(`${this.id}-component-js`, done => {
+        gulp.task(`${id}-component-js`, done => {
             let jsFileList = this.componentListMap.jsFileList;
 
             if (jsFileList && jsFileList.length && !_.compareArray(this.cachedComponentListMap.jsFileList, jsFileList)) {
@@ -216,7 +219,7 @@ class BuildTask {
         /**
          * copy resources to dist folder
          */
-        gulp.task(`${this.id}-copy`, gulp.parallel(done => {
+        gulp.task(`${id}-copy`, gulp.parallel(done => {
             let copyList = this.copyList;
             let copyFileList = copyList.map(dir => path.join(dir, '**/*.!(wxss)'));
 
@@ -233,32 +236,60 @@ class BuildTask {
         }));
 
         /**
+         * generate some file for multiple entries
+         */
+        gulp.task(`${id}-check-multiple`, gulp.parallel(done => {
+            if (this.isSimpleEntry) done();
+
+            // copy .npmignore and license
+            return gulp.src([path.join(__dirname, '../.npmignore'), path.join(__dirname, '../LICENSE')])
+                .pipe(gulp.dest(path.dirname(this.distPath)));
+        }, async () => {
+            if (this.isSimpleEntry) return;
+
+            // generate package.json
+            let writePackageJsonPath = path.join(this.distPath, '../package.json');
+            let packageJson = _.readJson(path.resolve(__dirname, '../package.json'));
+
+            await _.writeFile(writePackageJsonPath, JSON.stringify({
+                name: this.id,
+                version: packageJson.json || '1.0.0',
+                description: packageJson.description || '',
+                main: packageJson.main || 'miniprogram_dist/index.js',
+                repository: packageJson.repository || {},
+                author: packageJson.author || '',
+                license: packageJson.license || 'MIT',
+                dependencies: packageJson.dependencies || {},
+            }, null, '\t'));
+        }));
+
+        /**
          * watch json
          */
-        gulp.task(`${this.id}-watch-json`, () => {
-            return gulp.watch(this.componentListMap.jsonFileList, { cwd: this.srcPath, base: this.srcPath }, gulp.series('component-check', gulp.parallel('component-wxml', 'component-wxss', 'component-js', 'component-json')));
+        gulp.task(`${id}-watch-json`, () => {
+            return gulp.watch(this.componentListMap.jsonFileList, { cwd: this.srcPath, base: this.srcPath }, gulp.series(`${id}-component-check`, gulp.parallel(`${id}-component-wxml`, `${id}-component-wxss`, `${id}-component-js`, `${id}-component-json`)));
         });
 
         /**
          * watch wxml
          */
-        gulp.task(`${this.id}-watch-wxml`, () => {
+        gulp.task(`${id}-watch-wxml`, () => {
             this.cachedComponentListMap.wxmlFileList = null;
-            return gulp.watch(this.componentListMap.wxmlFileList, { cwd: this.srcPath, base: this.srcPath }, gulp.series('component-wxml'));
+            return gulp.watch(this.componentListMap.wxmlFileList, { cwd: this.srcPath, base: this.srcPath }, gulp.series(`${id}-component-wxml`));
         });
 
         /**
          * watch wxss
          */
-        gulp.task(`${this.id}-watch-wxss`, () => {
+        gulp.task(`${id}-watch-wxss`, () => {
             this.cachedComponentListMap.wxssFileList = null;
-            return gulp.watch('**/*.wxss', { cwd: this.srcPath, base: this.srcPath }, gulp.series('component-wxss'));
+            return gulp.watch('**/*.wxss', { cwd: this.srcPath, base: this.srcPath }, gulp.series(`${id}-component-wxss`));
         });
 
         /**
          * watch resources
          */
-        gulp.task(`${this.id}-watch-copy`, () => {
+        gulp.task(`${id}-watch-copy`, () => {
             let copyList = this.copyList;
             let copyFileList = copyList.map(dir => path.join(dir, '**/*'));
             let watchCallback = (filePath, stats) => {
@@ -278,20 +309,20 @@ class BuildTask {
         /**
          * watch installed packages
          */
-        gulp.task(`${this.id}-watch-install`, () => {
-            return gulp.watch(path.resolve(__dirname, 'package.json'), this.install());
+        gulp.task(`${id}-watch-install`, () => {
+            return gulp.watch(path.resolve(__dirname, '../package.json'), this.install());
         });
 
         /**
          * build custom component
          */
-        gulp.task(`${this.id}-build`, gulp.series(`${this.id}-clean-dist`, `${this.id}-component-check`, gulp.parallel(`${this.id}-component-wxml`, `${this.id}-component-wxss`, `${this.id}-component-js`, `${this.id}-component-json`, `${this.id}-copy`)));
+        gulp.task(`${id}-build`, gulp.series(`${id}-clean-dist`, `${id}-component-check`, gulp.parallel(`${id}-component-wxml`, `${id}-component-wxss`, `${id}-component-js`, `${id}-component-json`, `${id}-copy`)));
 
-        gulp.task(`${this.id}-watch`, gulp.series(`${this.id}-build`, `${this.id}-demo`, `${this.id}-install`, gulp.parallel(`${this.id}-watch-wxml`, `${this.id}-watch-wxss`, `${this.id}-watch-json`, `${this.id}-watch-copy`, `${this.id}-watch-install`)));
+        gulp.task(`${id}-watch`, gulp.series(`${id}-build`, `${id}-demo`, `${id}-install`, gulp.parallel(`${id}-watch-wxml`, `${id}-watch-wxss`, `${id}-watch-json`, `${id}-watch-copy`, `${id}-watch-install`)));
 
-        gulp.task(`${this.id}-dev`, gulp.series(`${this.id}-build`, `${this.id}-demo`, `${this.id}-install`));
+        gulp.task(`${id}-dev`, gulp.series(`${id}-build`, `${id}-demo`, `${id}-install`));
 
-        gulp.task(`${this.id}-default`, gulp.series(`${this.id}-build`));
+        gulp.task(`${id}-default`, gulp.series(`${id}-build`, `${id}-check-multiple`));
     }
 }
 

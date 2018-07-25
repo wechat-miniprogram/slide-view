@@ -28,6 +28,9 @@ function wrap(func, scope) {
 }
 
 const accessSync = wrap(fs.access);
+const statSync = wrap(fs.stat);
+const renameSync = wrap(fs.rename);
+const mkdirSync = wrap(fs.mkdir);
 const readFileSync = wrap(fs.readFile);
 const writeFileSync = wrap(fs.writeFile);
 
@@ -69,6 +72,42 @@ function readJson(filePath) {
 async function readFile(filePath) {
     return await readFileSync(filePath, 'utf8');
 }
+
+/**
+ * write file
+ */
+async function writeFile(filePath, data) {
+    await recursiveMkdir(path.dirname(filePath));
+    return await writeFileSync(filePath, data, 'utf8');   
+}
+
+/**
+ * create folder
+ */
+async function recursiveMkdir(dirPath) {
+  let prevDirPath = path.dirname(dirPath);
+  try {
+    await accessSync(prevDirPath);
+  } catch (err) {
+    // prevDirPath is not exist
+    await recursiveMkdir(prevDirPath);
+  }
+
+  try {
+    await accessSync(dirPath);
+
+    let stat = await statSync(dirPath);
+    if (stat && !stat.isDirectory()) {
+      // dirPath already exists but is not a directory, so it will be rename to a file with the suffix ending in '.bak'
+      await renameSync(dirPath, `${dirPath}.bak`);
+      await mkdirSync(dirPath);
+    }
+  } catch (err) {
+    // dirPath is not exist
+    await mkdirSync(dirPath);
+  }
+}
+
 
 /**
  * time format
@@ -124,12 +163,12 @@ function compareArray(arr1, arr2) {
 
 module.exports = {
     wrap,
-    writeFileSync,
     transformPath,
 
     checkFileExists,
     readJson,
     readFile,
+    writeFile,
 
     logger,
     format,
