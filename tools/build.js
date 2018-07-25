@@ -241,8 +241,9 @@ class BuildTask {
         gulp.task(`${id}-check-multiple`, gulp.parallel(done => {
             if (this.isSimpleEntry) done();
 
-            // copy .npmignore and license
-            return gulp.src([path.join(__dirname, '../.npmignore'), path.join(__dirname, '../LICENSE')])
+            // copy .npmignore, license, README.md ...etc
+            let srcDirname = path.dirname(__dirname);
+            return gulp.src(['.npmignore', 'LICENSE', 'README.md', 'docs/**/*'], { cwd: srcDirname, base: srcDirname })
                 .pipe(gulp.dest(path.dirname(this.distPath)));
         }, async () => {
             if (this.isSimpleEntry) return;
