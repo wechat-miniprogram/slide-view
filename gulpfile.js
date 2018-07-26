@@ -3,26 +3,10 @@ const clean = require('gulp-clean');
 
 const config = require('./tools/config');
 const BuildTask = require('./tools/build');
-
-let entry = config.entry;
-let idMap = {};
-let isSimpleEntry = typeof entry === 'string';
-
-if (isSimpleEntry) {
-    idMap = { main: entry };
-} else {
-    idMap = entry;
-}
+const id = require('./package.json').name || 'miniprogram-custom-component';
 
 // build task instance
-let idList = Object.keys(idMap);
-idList.forEach(id => {
-    new BuildTask({
-        id,
-        entry: idMap[id],
-        isSimpleEntry,
-    });
-});
+new BuildTask(id, config.entry);
 
 // clean the generated folders and files
 gulp.task('clean', gulp.series(() => {
@@ -37,8 +21,8 @@ gulp.task('clean', gulp.series(() => {
     done();
 }));
 // watch files and build
-gulp.task('watch', gulp.parallel.apply(gulp, idList.map(id => `${id}-watch`)));
+gulp.task('watch', gulp.series(`${id}-watch`));
 // build for develop
-gulp.task('dev', gulp.parallel.apply(gulp, idList.map(id => `${id}-dev`)));
+gulp.task('dev', gulp.series(`${id}-dev`));
 // build for publish
-gulp.task('default', gulp.parallel.apply(gulp, idList.map(id => `${id}-default`)));
+gulp.task('default', gulp.series(`${id}-default`));

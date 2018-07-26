@@ -161,6 +161,23 @@ function compareArray(arr1, arr2) {
     return true;
 }
 
+/**
+ * merge two object
+ */
+function merge(obj1, obj2) {
+    Object.keys(obj2).forEach(key => {
+        if (Array.isArray(obj1[key]) && Array.isArray(obj2[key])) {
+            obj1[key] = obj1[key].concat(obj2[key]);
+        } else if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
+            obj1[key] = Object.assign(obj1[key], obj2[key]);
+        } else {
+            obj1[key] = obj2[key];
+        }
+    });
+
+    return obj1;
+}
+
 module.exports = {
     wrap,
     transformPath,
@@ -173,4 +190,5 @@ module.exports = {
     logger,
     format,
     compareArray,
+    merge,
 };

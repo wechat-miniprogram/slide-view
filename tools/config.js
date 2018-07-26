@@ -13,7 +13,6 @@ const dist = path.resolve(__dirname, '../miniprogram_dist');
 
 module.exports = {
     entry: 'index',
-    copy: ['./wxml', './wxss', './wxs', './images'],
 
     isDev,
     isWatch,
@@ -66,4 +65,5 @@ module.exports = {
             }
         }
     },
+    copy: ['./wxml', './wxss', './wxs', './images'],
 };

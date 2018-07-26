@@ -11,6 +11,7 @@
     "clean-dev": "gulp clean --develop",
     "clean": "gulp clean"
   },
+  "miniprogram": "miniprogram_dist",
   "repository": {
     "type": "git",
     "url": "https://github.com/wechat-miniprogram/slide-view.git"

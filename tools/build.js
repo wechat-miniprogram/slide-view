@@ -17,13 +17,14 @@ const _ = require('./utils');
 const wxssConfig = config.wxss || {};
 
 class BuildTask {
-    constructor(options = {}) {
-        this.id = options.id;
-        this.entry = options.entry;
+    constructor(id, entry) {
+        if (!entry) return;
+
+        this.id = id;
+        this.entries = Array.isArray(config.entry) ? config.entry : [config.entry];
         this.srcPath = config.srcPath;
-        this.isSimpleEntry = options.isSimpleEntry;
-        this.distPath = this.isSimpleEntry ? config.distPath : config.isDev ? path.join(config.distPath, this.id) : path.join(config.distPath, this.id, 'miniprogram_dist');
-        this.copyList = Array.isArray(config.copy) ? config.copy : (config.copy && config.copy[this.id] || []);
+        this.distPath = config.distPath;
+        this.copyList = Array.isArray(config.copy) ? config.copy : [];
         this.componentListMap = {};
         this.cachedComponentListMap = {};
 
@@ -113,7 +114,6 @@ class BuildTask {
 
             return gulp.src(demoPackageJsonPath)
                 .pipe(gulpInstall({ production: true }));
-
         });
     }
 
@@ -157,11 +157,17 @@ class BuildTask {
          * check custom components
          */
         gulp.task(`${id}-component-check`, async () => {
-            let entry = path.join(this.srcPath, `${this.entry}.json`);
-            let newComponentListMap = await checkComponents(entry);
+            let entries = this.entries;
+            let mergeComponentListMap = {};
+            for (let entry of entries) {
+                entry = path.join(this.srcPath, `${entry}.json`);
+                let newComponentListMap = await checkComponents(entry);
+
+                _.merge(mergeComponentListMap, newComponentListMap);
+            }
 
             this.cachedComponentListMap = this.componentListMap;
-            this.componentListMap = newComponentListMap;
+            this.componentListMap = mergeComponentListMap;
         });
 
         /**
@@ -236,35 +242,6 @@ class BuildTask {
         }));
 
         /**
-         * generate some file for multiple entries
-         */
-        gulp.task(`${id}-check-multiple`, gulp.parallel(done => {
-            if (this.isSimpleEntry) done();
-
-            // copy .npmignore, license, README.md ...etc
-            let srcDirname = path.dirname(__dirname);
-            return gulp.src(['.npmignore', 'LICENSE', 'README.md', 'docs/**/*'], { cwd: srcDirname, base: srcDirname })
-                .pipe(gulp.dest(path.dirname(this.distPath)));
-        }, async () => {
-            if (this.isSimpleEntry) return;
-
-            // generate package.json
-            let writePackageJsonPath = path.join(this.distPath, '../package.json');
-            let packageJson = _.readJson(path.resolve(__dirname, '../package.json'));
-
-            await _.writeFile(writePackageJsonPath, JSON.stringify({
-                name: this.id,
-                version: packageJson.json || '1.0.0',
-                description: packageJson.description || '',
-                main: packageJson.main || 'miniprogram_dist/index.js',
-                repository: packageJson.repository || {},
-                author: packageJson.author || '',
-                license: packageJson.license || 'MIT',
-                dependencies: packageJson.dependencies || {},
-            }, null, '\t'));
-        }));
-
-        /**
          * watch json
          */
         gulp.task(`${id}-watch-json`, () => {
@@ -323,7 +300,7 @@ class BuildTask {
 
         gulp.task(`${id}-dev`, gulp.series(`${id}-build`, `${id}-demo`, `${id}-install`));
 
-        gulp.task(`${id}-default`, gulp.series(`${id}-build`, `${id}-check-multiple`));
+        gulp.task(`${id}-default`, gulp.series(`${id}-build`));
     }
 }
 
