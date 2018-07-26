@@ -11,7 +11,7 @@
 1. 安装 slide-view
 
 ```
-npm install --save weapp-slide-view
+npm install --save miniprogram-slide-view
 ```
 
 2. 在需要使用 slide-view 的页面 page.json 中添加 slide-view 自定义组件配置
@@ -19,7 +19,7 @@ npm install --save weapp-slide-view
 ```json
 {
   "usingComponents": {
-    "slide-view": "weapp-slide-view"
+    "slide-view": "miniprogram-slide-view"
   }
 }
 ```
