@@ -31,7 +31,6 @@ module.exports = {
         mode: 'production',
         output: {
             filename: '[name].js',
-            chunkFilename: 'chunk/[chunkhash].chunk.js',
         },
         target: 'node',
         externals: [nodeExternals()], // ignore node_modules
@@ -48,14 +47,10 @@ module.exports = {
         },
         plugins: [
             new webpack.DefinePlugin({}),
-            // new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 10 }),
+            new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
         ],
         optimization: {
             minimize: false,
-            splitChunks: {
-                chunks: 'initial',
-                minSize: 10,
-            }
         },
         // devtool: 'nosources-source-map',
         performance: {
