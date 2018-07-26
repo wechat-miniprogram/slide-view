@@ -31,6 +31,7 @@ module.exports = {
         mode: 'production',
         output: {
             filename: '[name].js',
+            libraryTarget: 'commonjs2',
         },
         target: 'node',
         externals: [nodeExternals()], // ignore node_modules
