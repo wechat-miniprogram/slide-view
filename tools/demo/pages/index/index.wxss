@@ -1,13 +1,50 @@
+/**index.wxss**/
 .slide{
+  /* border-top:1px solid #ccc; */
+  border-bottom:1px solid #DEDEDE;
 }
 .l {
-  background-color: blue;
-  height: 100rpx;
-  width: 320rpx;
+  background-color: white;
+  height: 110rpx;
+  width: 750rpx;
+  display: flex;
+  flex-direction: row;
 }
 .r {
-  height: 100rpx;
-  width: 200rpx;
+  height: 110rpx;
   display: flex;
   direction: row;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 110rpx;
+}
+.read {
+  background-color: #ccc;
+  color: #fff;
+  width: 350rpx;
+}
+.delete {
+  background-color: red;
+  color: #fff;
+  width: 150rpx; 
+}
+.img {
+  width: 90rpx;
+  height: 90rpx;
+  border-radius:10rpx;
+  margin: 10rpx 15rpx;
+}
+.text {
+  display: flex;
+  flex-direction: row;
+}
+.title {
+  margin-top: 15rpx;
+  font-size: 33rpx;
+}
+.time {
+  margin-top: 15rpx;
+  color: #ccc;
+  font-size: 25rpx;
+  margin-left: 330rpx;
 }

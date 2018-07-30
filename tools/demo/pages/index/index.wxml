@@ -1,7 +1,16 @@
-<slide-view class="slide" width="320" height="100" slideWidth="200">
-  <view slot="left" class="l">这里是插入静止时现实的内容</view>
+<!--index.wxml-->
+<view  class='slide'>
+  <slide-view width="750" height="110" slide-width="500">
+  <view slot="left" class="l">
+    <image src="/pages/image/file_transfer.jpg" class="img"></image>
+    <view class='text'>
+      <view class='title'>文件传输助手</view>
+      <view class='time'>7:00 PM</view>
+    </view>
+  </view>
   <view slot="right" class="r">
-    <view style="background-color: yellow; width: 100rpx; ">标为已读</view>
-    <view style="background-color: green; width: 100rpx; ">删除</view>
+    <view class='read'>标为已读</view>
+    <view class='delete'>删除</view>
   </view>
 </slide-view>
+</view>
