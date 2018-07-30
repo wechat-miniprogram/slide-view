@@ -1,16 +1,17 @@
 # slide-view
 
 小程序自定义组件
-需要依赖小程序基础库 2.2.1 版本，同时依赖工具的 npm 构建。具体详情可查阅[官方 npm 文档](https://developers.weixin.qq.com/miniprogram/dev/devtools/npm.html)。
+
+> 使用此组件需要依赖小程序基础库 2.2.1 以上版本，同时依赖开发者工具的 npm 构建。具体详情可查阅[官方 npm 文档](https://developers.weixin.qq.com/miniprogram/dev/devtools/npm.html)。
 
 ## 使用效果
-
+![slide-view](./docs/slide-view.gif)
 ## 使用方法
 
 1. 安装 slide-view
 
 ```
-npm install --save weapp-slide-view
+npm install --save miniprogram-slide-view
 ```
 
 2. 在需要使用 slide-view 的页面 page.json 中添加 slide-view 自定义组件配置
@@ -18,7 +19,7 @@ npm install --save weapp-slide-view
 ```json
 {
   "usingComponents": {
-    "slide-view": "weapp-slide-view"
+    "slide-view": "miniprogram-slide-view"
   }
 }
 ```
