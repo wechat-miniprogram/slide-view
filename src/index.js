@@ -49,8 +49,8 @@ Component({
       that._viewWidth = that.data.width + res.width * (750 / _windowWidth)
       that.setData({
         viewWidth: that._viewWidth
-      });
-    }).exec();
+      })
+    }).exec()
   },
   methods: {
     onTouchStart(e) {
@@ -59,7 +59,7 @@ Component({
     //  当滑动范围超过阈值自动完成剩余滑动
     onTouchEnd(e) {
       this._endX = e.changedTouches[0].pageX
-      const { _endX, _startX, _threshold } = this
+      const {_endX, _startX, _threshold} = this
       if (_startX - _endX >= _threshold) {
         this.setData({
           x: -this._slideWidth
@@ -91,4 +91,4 @@ Component({
       }
     }
   }
-});
+})
