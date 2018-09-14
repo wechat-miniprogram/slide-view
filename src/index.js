@@ -59,7 +59,10 @@ Component({
     //  当滑动范围超过阈值自动完成剩余滑动
     onTouchEnd(e) {
       this._endX = e.changedTouches[0].pageX
-      const {_endX, _startX, _threshold} = this
+      const { _endX, _startX, _threshold } = this
+      if (_endX > _startX && this.data.out === false) {
+        return;
+      }
       if (_startX - _endX >= _threshold) {
         this.setData({
           x: -this._slideWidth
