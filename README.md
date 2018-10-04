@@ -6,6 +6,9 @@
 
 ## 使用效果
 ![slide-view](./docs/slide-view.gif)
+
+> PS：此组件默认只携带基本样式，若想要获得上图中的效果，可参考 tools/demo 中的例子实现。
+
 ## 使用方法
 
 1. 安装 slide-view
