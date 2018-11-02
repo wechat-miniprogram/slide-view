@@ -39,30 +39,31 @@ Component({
   /**
    * 组件的方法列表
    */
-  //    获取右侧滑动显示区域的宽度
   ready() {
-    const that = this
-    const query = wx.createSelectorQuery().in(this)
-    query.select('.right').boundingClientRect(function (res) {
-      that._slideWidth = res.width
-      that._threshold = res.width / 2
-      that._viewWidth = that.data.width + res.width * (750 / _windowWidth)
-      that.setData({
-        viewWidth: that._viewWidth
-      })
-    }).exec()
+    this.updateRight()
   },
   methods: {
+    updateRight() {
+      // 获取右侧滑动显示区域的宽度
+      const that = this
+      const query = wx.createSelectorQuery().in(this)
+      query.select('.right').boundingClientRect(function (res) {
+        that._slideWidth = res.width
+        that._threshold = res.width / 2
+        that._viewWidth = that.data.width + res.width * (750 / _windowWidth)
+        that.setData({
+          viewWidth: that._viewWidth
+        })
+      }).exec()
+    },
     onTouchStart(e) {
       this._startX = e.changedTouches[0].pageX
     },
     //  当滑动范围超过阈值自动完成剩余滑动
     onTouchEnd(e) {
       this._endX = e.changedTouches[0].pageX
-      const { _endX, _startX, _threshold } = this
-      if (_endX > _startX && this.data.out === false) {
-        return;
-      }
+      const {_endX, _startX, _threshold} = this
+      if (_endX > _startX && this.data.out === false) return
       if (_startX - _endX >= _threshold) {
         this.setData({
           x: -this._slideWidth
