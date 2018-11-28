@@ -1,5 +1,5 @@
 // slide-view/slide-view.js
-const _windowWidth = wx.getSystemInfoSync().windowWidth
+const _windowWidth = wx.getSystemInfoSync().windowWidth // (px)
 Component({
   /**
    * 组件的属性列表
@@ -8,17 +8,17 @@ Component({
     multipleSlots: true,
   },
   properties: {
-    //  组件显示区域的宽度
+    //  组件显示区域的宽度 (rpx)
     width: {
       type: Number,
-      value: _windowWidth
+      value: 750 // 750rpx 即整屏宽
     },
-    //  组件显示区域的高度
+    //  组件显示区域的高度 (rpx)
     height: {
       type: Number,
       value: 0,
     },
-    //  组件滑动显示区域的宽度
+    //  组件滑动显示区域的宽度 (rpx)
     slideWidth: {
       type: Number,
       value: 0
@@ -29,7 +29,7 @@ Component({
    * 组件的初始数据
    */
   data: {
-    viewWidth: _windowWidth,
+    viewWidth: _windowWidth, // (rpx)
     //  movable-view偏移量
     x: 0,
     //  movable-view是否可以出界
