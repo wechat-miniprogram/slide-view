@@ -5,6 +5,7 @@
 > 使用此组件需要依赖小程序基础库 2.2.1 以上版本，同时依赖开发者工具的 npm 构建。具体详情可查阅[官方 npm 文档](https://developers.weixin.qq.com/miniprogram/dev/devtools/npm.html)。
 
 ## 使用效果
+
 ![slide-view](./docs/slide-view.gif)
 
 > PS：此组件默认只携带基本样式，若想要获得上图中的效果，可参考 [tools/demo](./tools/demo/pages/index/index.wxss) 中的例子实现。
@@ -26,6 +27,7 @@ npm install --save miniprogram-slide-view
   }
 }
 ```
+
 3. WXML 文件中引用 slide-view
 
 每一个 slide-view 提供两个`<slot>`节点，用于承载组件引用时提供的子节点。left 节点用于承载静止时 slide-view 所展示的节点，此节点的宽高应与传入 slide-view 的宽高相同。right 节点用于承载滑动时所展示的节点，其宽度应于传入 slide-view 的 slideWidth 相同。
@@ -42,10 +44,8 @@ npm install --save miniprogram-slide-view
 
 **slide-view的属性介绍如下：**
 
-| 属性名                   | 类型         | 默认值                    | 是否必须    | 说明                                        |
-|-------------------------|--------------|---------------------------|------------|---------------------------------------------|
-| width                   | Number       | 显示屏幕的宽度             | 是          | slide-view组件的宽度                        |
-| height                  | Number       | 0                         | 是          | slide-view组件的高度                        |
-| slide-width              | Number       | 0                         | 是          | 滑动展示区域的宽度（默认高度与slide-view相同）|
-
-
+| 属性名                   | 类型         | 单位         | 默认值                    | 是否必须    | 说明                                        |
+|-------------------------|--------------|--------------|---------------------------|------------|---------------------------------------------|
+| width                   | Number       | rpx          | 显示屏幕的宽度             | 是          | slide-view组件的宽度                        |
+| height                  | Number       | rpx          | 0                         | 是          | slide-view组件的高度                        |
+| slide-width             | Number       | rpx          | 0                         | 是          | 滑动展示区域的宽度（默认高度与slide-view相同）|
