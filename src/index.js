@@ -63,7 +63,7 @@ Component({
     onTouchEnd(e) {
       this._endX = e.changedTouches[0].pageX
       const {_endX, _startX, _threshold} = this
-      if (_endX > _startX && this.data.out === false) return
+      if (_endX > _startX && this.data.out === false && this.data.x === 0) return
       if (_startX - _endX >= _threshold) {
         this.setData({
           x: -this._slideWidth
