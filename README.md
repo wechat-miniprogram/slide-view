@@ -8,6 +8,7 @@
 + 新增监听器`autoReset`，通过监听器设置为`true`将组件reset到初始状态
 
 原文文档：[点击这里查看](https://github.com/wechat-miniprogram/slide-view/blob/master/README.md)
+
 小程序自定义组件
 
 > 使用此组件需要依赖小程序基础库 2.2.1 以上版本，同时依赖开发者工具的 npm 构建。具体详情可查阅[官方 npm 文档](https://developers.weixin.qq.com/miniprogram/dev/devtools/npm.html)。
@@ -20,11 +21,11 @@
 
 ## 使用方法
 
-1. 安装 slide-view
+**1. 安装 slide-view**
 
 下载包，然后将`src`目录下的文件拷贝至项目的组件目录，如`/components/slideview`
 
-2. 在需要使用 slide-view 的页面 page.json 中添加 slide-view 自定义组件配置
+**2. 在需要使用 slide-view 的页面 page.json 中添加 slide-view 自定义组件配置**
 
 ```json
 {
@@ -34,7 +35,7 @@
 }
 ```
 
-3. WXML 文件中引用 slide-view
+**3. WXML 文件中引用 slide-view**
 
 每一个 slide-view 提供两个`<slot>`节点，用于承载组件引用时提供的子节点。left 节点用于承载静止时 slide-view 所展示的节点，此节点的宽高应与传入 slide-view 的宽高相同。right 节点用于承载滑动时所展示的节点，其宽度应于传入 slide-view 的 slideWidth 相同。
 
@@ -61,7 +62,7 @@
 | autoReset              | Boolean      | 无           | false                     | 否          | 监听器，只有设置为true时会触发，触发后组件自动恢复至初始状态| 
 
 
-4. 官方组件存在的问题
+**官方组件存在的问题**
 
 展开组件后，再滑动组件一小段距离，组件无法恢复到初始状态，如下：
 
@@ -71,7 +72,7 @@
 
 ![](./docs/1.gif)
 
-5. Demo
+**Demo**
 
 ![](./docs/3.gif)
 ![](./docs/4.gif)
