@@ -1,3 +1,5 @@
+> 本仓库不再维护，有需求请使用[weui-miniprogram](https://github.com/wechat-miniprogram/weui-miniprogram)的slideview组件。
+
 # slide-view
 
 小程序自定义组件
