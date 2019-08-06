@@ -1,10 +1,11 @@
 /* slide-view/slide-view.wxss */
-.movable-view{
+.movable-view {
   display: flex;
   direction: row;
   overflow: hidden;
 }
 
 .container {
+  position: relative;
   overflow: hidden;
 }

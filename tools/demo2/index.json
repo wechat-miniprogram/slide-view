@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "slide-view": "/components/slideview/index"
+  },
+  "navigationBarTitleText": "listview测试"
+}

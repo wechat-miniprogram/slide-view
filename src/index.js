@@ -18,11 +18,8 @@ Component({
       type: Number,
       value: 0,
     },
-    //  组件滑动显示区域的宽度 (rpx)
-    slideWidth: {
-      type: Number,
-      value: 0
-    }
+    threshold: Number, // (rpx),
+    autoReset: Boolean
   },
 
   /**
@@ -34,6 +31,12 @@ Component({
     x: 0,
     //  movable-view是否可以出界
     out: false,
+    slideWidth: 0
+  },
+  observers: {
+    "autoReset": function(val) {
+      val && this._expand && this.reset()
+    }
   },
 
   /**
@@ -47,14 +50,33 @@ Component({
       // 获取右侧滑动显示区域的宽度
       const that = this
       const query = wx.createSelectorQuery().in(this)
+      let ratio = 1
       query.select('.right').boundingClientRect(function (res) {
+        ratio = 750 / _windowWidth
         that._slideWidth = res.width
-        that._threshold = res.width / 2
-        that._viewWidth = that.data.width + res.width * (750 / _windowWidth)
+        that._threshold = that.data.threshold ? that.data.threshold / ratio : res.width / 2
+        that._viewWidth = that.data.width + res.width * ratio
         that.setData({
-          viewWidth: that._viewWidth
+          viewWidth: that._viewWidth,
+          slideWidth: res.width * ratio
         })
       }).exec()
+    },
+    reset() {
+      this.setData({
+        x: 0
+      }, function() {
+        this._expand = false
+        this.triggerEvent('reset', this)
+      })
+    },
+    end() {
+      this.setData({
+        x: -this._slideWidth
+      }, function() {
+        this._expand = true
+        this.triggerEvent("end", this)
+      })
     },
     onTouchStart(e) {
       this._startX = e.changedTouches[0].pageX
@@ -63,23 +85,15 @@ Component({
     onTouchEnd(e) {
       this._endX = e.changedTouches[0].pageX
       const {_endX, _startX, _threshold} = this
-      if (_endX > _startX && this.data.out === false) return
+      if (_endX > _startX && this.data.out === false && this.data.x === 0) return
       if (_startX - _endX >= _threshold) {
-        this.setData({
-          x: -this._slideWidth
-        })
+        this.end()
       } else if (_startX - _endX < _threshold && _startX - _endX > 0) {
-        this.setData({
-          x: 0
-        })
+        this.reset()
       } else if (_endX - _startX >= _threshold) {
-        this.setData({
-          x: 0
-        })
+        this.reset()
       } else if (_endX - _startX < _threshold && _endX - _startX > 0) {
-        this.setData({
-          x: -this._slideWidth
-        })
+        this.end()
       }
     },
     //  根据滑动的范围设定是否允许movable-view出界
@@ -93,6 +107,10 @@ Component({
           out: false
         })
       }
+      this.triggerEvent('move', {
+        target: this,
+        event: e
+      })
     }
   }
 })

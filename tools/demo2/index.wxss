@@ -1,0 +1,5 @@
+/* pages/calculator/history/index.wxss */
+.left {
+  padding: 20rpx;
+  box-sizing: border-box;
+}

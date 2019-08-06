@@ -1,0 +1,11 @@
+<view class="container">
+  <view class='slide' wx:for="{{[0,1,2]}}" wx:key="{{item}}">
+    <slide-view width="750" height="110" slide-width="352" autoReset="{{reset}}" bindtap="handleTap" data-index="{{item}}" bindend="handleEnd"  bindtouchstart="handleTouch">
+      <view slot="left" class="left">列表项{{item+ 1}}</view>
+      <view slot="right" class="right" style="width: 352rpx">
+        <view class='item danger'>标为已读</view>
+        <view class='item'>删除</view>
+      </view>
+    </slide-view>
+  </view>
+</view>
